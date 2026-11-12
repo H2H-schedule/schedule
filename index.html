@@ -55,17 +55,39 @@ dialog{border:0;border-radius:6px;padding:0;width:min(440px,calc(100% - 24px));b
 dialog::backdrop{background:rgba(0,0,0,.4)}
 form{padding:24px;display:grid;gap:14px}
 form h3{margin:0;font:700 20px Barlow,"Noto Sans KR",sans-serif}
-label{display:grid;gap:4px;font-size:12px;color:var(--sub)}
+label,.fld{display:grid;gap:4px;font-size:12px;color:var(--sub)}
 input,select,textarea{border:1px solid var(--line);background:var(--bg);padding:9px 10px;border-radius:3px;font-size:14px}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--line);background:none;border-radius:16px;padding:3px 12px;cursor:pointer;font-size:13px}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:2px 16px}
+.chip{border:0;background:none;border-radius:0;padding:5px 0;cursor:pointer;font-size:14px;color:var(--sub);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:5px;text-decoration-thickness:2px}
+.chip[aria-pressed="true"]{color:var(--ink);font-weight:700;text-decoration-color:var(--accent)}
+.lnks{margin:16px 0 0;display:flex;flex-wrap:wrap;gap:6px 16px}
+.lnk{border:0;background:none;padding:0;font-size:12px;color:var(--sub);text-decoration:underline;cursor:pointer}
+.lnk:hover{color:var(--ink)}
+#up{display:none}
 input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 .acts .del{margin-right:auto;color:var(--accent);border-color:var(--accent)}
 .foot{margin-top:40px;color:var(--sub);font-size:12px;display:flex;gap:12px;align-items:center}
 .foot button{border:0;background:none;color:var(--sub);cursor:pointer;text-decoration:underline;padding:0;font-size:12px}
-@media(max-width:900px){.layout{grid-template-columns:1fr}aside{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:20px}}
+@media(max-width:900px){
+.layout{grid-template-columns:1fr;margin-top:24px}
+aside{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:20px}
+aside.nosel,#clearSel{display:none}
+#up{display:block;margin-top:22px;background:var(--surface);border-radius:16px;padding:14px 14px 4px}
+.uhead{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.uhead:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.urow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.uhead+.urow{border-top:0}
+.ud{flex:none;width:48px;text-align:center;background:var(--bg);border-radius:10px;padding:6px 0;line-height:1.1}
+.ud b{display:block;font:700 15px Barlow,sans-serif}
+.ud i{display:block;font-style:normal;font-size:10px;color:var(--accent);margin-top:2px}
+.ub{min-width:0;flex:1}
+.ub .t,.ub .m{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ub .t{font-weight:700;font-size:13px}
+.ub .m{color:var(--sub);font-size:11px}
+.urow .editbtn{position:static;flex:none}
+#up .empty{padding:6px 0 12px;font-size:13px}
+}
 @media(max-width:640px){.wrap{padding:20px 12px 40px}h1{font-size:32px}.dow,.week{gap:0 4px}.cell{height:100px;padding:6px 3px 0}.num{font-size:18px}.ev{font-size:10px}}
 </style>
 </head>
@@ -78,6 +100,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
     <div class="nav"><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button><button class="today" id="goToday">today</button><button class="today" id="add" hidden>일정 등록</button></div>
   </div>
 </header>
+<section id="up" aria-label="다가오는 일정"></section>
 <div class="layout">
   <main><div class="dow" id="dow"></div><div id="grid"></div></main>
   <aside id="side"></aside>
@@ -91,7 +114,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
   <label>제목<input id="fTitle" required maxlength="120"></label>
   <label>날짜<input id="fDate" type="date" required></label>
   <label>종류<select id="fType"></select></label>
-  <label>멤버 (선택하지 않으면 전체)<div class="chips" id="fMem"></div></label>
+  <div class="fld"><span>멤버 (선택하지 않으면 전체)</span><div class="chips" id="fMem"></div></div>
   <label>메모 (선택)<textarea id="fMemo" rows="3"></textarea></label>
   <div class="acts">
     <button type="button" class="btn ghost del" id="fDel">삭제</button>
@@ -146,7 +169,14 @@ function render(){
   $('count').textContent=status||('등록된 일정 '+events.length+'개');
   $('add').hidden=!isAdmin();
   $('auth').textContent=isAdmin()?'관리자 모드 끄기':'관리자';
-  side();
+  side();renderUp();$('side').classList.toggle('nosel',!sel);
+}
+function renderUp(){
+  const t=ymd(new Date()),up=events.slice().sort((a,b)=>a.date.localeCompare(b.date)).filter(e=>e.date>=t).slice(0,3);
+  $('up').innerHTML='<div class="uhead">다가오는 일정</div>'+(up.length?up.map(e=>{
+    const d=new Date(e.date+'T00:00'),meta=[e.type,e.members.length?e.members.join(', '):''].filter(Boolean).join(' · ');
+    return `<div class="urow" data-d="${e.date}" data-id="${esc(e.id)}"><div class="ud"><b>${pad(d.getMonth()+1)}.${pad(d.getDate())}</b><i>${DOW[(d.getDay()+6)%7]}</i></div><div class="ub"><span class="t">${esc(e.title)}</span><span class="m">${esc(meta)}</span></div>${isAdmin()?'<button type="button" class="editbtn" data-edit>수정</button>':''}</div>`;
+  }).join(''):'<div class="empty">다가오는 일정이 없어요.</div>');
 }
 function itemHtml(e,showDate){
   const meta=[showDate?e.date:'',e.type,e.members.length?e.members.join(', '):''].filter(Boolean).join(' · ');
@@ -156,7 +186,7 @@ function side(){
   const evs=events.slice().sort((a,b)=>a.date.localeCompare(b.date));
   if(sel){
     const list=evs.filter(e=>e.date===sel),d=new Date(sel+'T00:00');
-    $('side').innerHTML=`<h2>${d.getMonth()+1}월 ${d.getDate()}일</h2><div class="d">${DOW[(d.getDay()+6)%7]}요일</div>`+(list.length?list.map(e=>itemHtml(e)).join(''):'<div class="empty">이 날은 등록된 일정이 없어요.</div>')+(isAdmin()?'<p><button class="btn ghost" id="addDay">이 날짜에 일정 등록</button></p>':'')+'<p><button class="btn ghost" id="clearSel">다가오는 일정 보기</button></p>';
+    $('side').innerHTML=`<h2>${d.getMonth()+1}월 ${d.getDate()}일</h2><div class="d">${DOW[(d.getDay()+6)%7]}요일</div>`+(list.length?list.map(e=>itemHtml(e)).join(''):'<div class="empty">이 날은 등록된 일정이 없어요.</div>')+'<p class="lnks">'+(isAdmin()?'<button class="lnk" id="addDay">이 날짜에 일정 등록</button>':'')+'<button class="lnk" id="clearSel">다가오는 일정 보기</button></p>';
   }else{
     const t=ymd(new Date()),up=evs.filter(e=>e.date>=t).slice(0,5);
     $('side').innerHTML='<h2>다가오는 일정</h2><div class="d">오늘 이후 등록된 일정</div>'+(up.length?up.map(e=>itemHtml(e,1)).join(''):'<div class="empty">다가오는 일정이 없어요.</div>');
@@ -167,15 +197,20 @@ function side(){
 async function commit(mut,msg){
   const api=`https://api.github.com/repos/${CFG.owner}/${CFG.repo}/contents/${CFG.path}`;
   const h={Authorization:'Bearer '+getTok(),Accept:'application/vnd.github+json'};
-  const r=await fetch(api+'?ref='+CFG.branch,{headers:h});if(!r.ok)throw new Error(r.status);
-  const j=await r.json();
-  const cur=toList(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,'')),c=>c.charCodeAt(0)))));
-  mut(cur);
-  const sorted=cur.sort((a,b)=>a.date.localeCompare(b.date));
-  const bytes=new TextEncoder().encode(JSON.stringify(sorted,null,2));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));
-  const p=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify({message:msg,content:btoa(bin),sha:j.sha,branch:CFG.branch})});
-  if(!p.ok)throw new Error(p.status);
-  data=sorted;build();render();
+  for(let n=0;n<3;n++){
+    /* GitHub API 응답은 브라우저에 캐시되어 sha가 오래된 값일 수 있어서 항상 새로 받아요 */
+    const r=await fetch(api+'?ref='+CFG.branch+'&t='+Date.now(),{headers:h,cache:'no-store'});if(!r.ok)throw new Error(r.status);
+    const j=await r.json();
+    const cur=toList(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,'')),c=>c.charCodeAt(0)))));
+    mut(cur);
+    const sorted=cur.sort((a,b)=>a.date.localeCompare(b.date));
+    const bytes=new TextEncoder().encode(JSON.stringify(sorted,null,2));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));
+    const p=await fetch(api,{method:'PUT',headers:h,cache:'no-store',body:JSON.stringify({message:msg,content:btoa(bin),sha:j.sha,branch:CFG.branch})});
+    if(p.status===409&&n<2)continue; /* 그 사이 파일이 바뀐 경우 최신본으로 다시 시도 */
+    if(!p.ok)throw new Error(p.status);
+    data=sorted;build();render();
+    return;
+  }
 }
 const removeId=(a,id)=>{const i=a.findIndex(x=>x.id===id);if(i>=0)a.splice(i,1)};
 
@@ -192,7 +227,14 @@ function openForm(ev,date){
   $('fDel').style.display=ev?'':'none';
   $('dlg').showModal();
 }
-$('grid').onclick=e=>{const c=e.target.closest('[data-d]');if(!c)return;sel=c.dataset.d;const d=new Date(sel+'T00:00');if(d.getMonth()!==view.getMonth())view=new Date(d.getFullYear(),d.getMonth(),1);render()};
+const mob=()=>matchMedia('(max-width:900px)').matches;
+const showSide=()=>{if(mob()&&sel)$('side').scrollIntoView({behavior:'smooth',block:'nearest'})};
+$('grid').onclick=e=>{const c=e.target.closest('[data-d]');if(!c)return;const s=c.dataset.d;if(mob()&&sel===s){sel=null;return render()}sel=s;const d=new Date(sel+'T00:00');if(d.getMonth()!==view.getMonth())view=new Date(d.getFullYear(),d.getMonth(),1);render();showSide()};
+$('up').onclick=e=>{
+  const r=e.target.closest('.urow');if(!r)return;
+  if(e.target.closest('[data-edit]')){const x=events.find(v=>v.id===r.dataset.id);if(x)openForm(x);return}
+  sel=r.dataset.d;const d=new Date(sel+'T00:00');view=new Date(d.getFullYear(),d.getMonth(),1);render();showSide();
+};
 $('side').onclick=e=>{
   if(e.target.id==='addDay')return openForm(null,sel);
   if(e.target.id==='clearSel'){sel=null;return render()}
