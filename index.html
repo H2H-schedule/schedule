@@ -10,6 +10,7 @@
 :root{--bg:#fff;--surface:#f7f6f4;--ink:#1c1c1c;--sub:#777;--line:#e6e4e1;--accent:#ff4d6d;--btn:#1c1c1c;--btnink:#fff;--sel:#f3efe9}
 @media(prefers-color-scheme:dark){:root{--bg:#161616;--surface:#202020;--ink:#f1f1f1;--sub:#9a9a9a;--line:#333;--btn:#f1f1f1;--btnink:#161616;--sel:#262320;color-scheme:dark}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+a,a:hover,a:focus,a:visited,u,ins,abbr{text-decoration:none}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.5 "Noto Sans KR",system-ui,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
 .wrap{max-width:1240px;margin:0 auto;padding:44px 28px 72px}
@@ -19,13 +20,12 @@ header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 24px;justify-co
 .mo{font:700 30px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02em}
 .tb{display:flex;align-items:center;flex-wrap:wrap;gap:8px 22px}
 .lead{color:var(--sub);font-size:13px;line-height:1.7;margin:22px 0 0;max-width:420px}
-.nav{display:flex;align-items:center;gap:2px}
-.nav button{border:0;background:none;width:30px;height:30px;cursor:pointer;font-size:18px;line-height:1;border-radius:50%}
-.nav .tdot{display:flex;align-items:center;justify-content:center}
+.nav{display:flex;align-items:center;gap:2px;position:relative;top:1.5px}
+.nav button{border:0;background:none;width:30px;height:30px;padding:0;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .nav .tdot:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
 @media(hover:hover){.nav button:hover{background:var(--surface)}}
 .nav .today{width:auto;padding:0 8px;margin-left:10px;font-size:13px;border-radius:0;color:var(--sub)}
-.nav .today:hover{background:none;color:var(--ink);text-decoration:underline}
+.nav .today:hover{background:none;color:var(--ink)}
 .btn{background:var(--btn);color:var(--btnink);border:0;padding:12px 22px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.16);border-radius:3px}
 .btn.ghost{background:none;color:var(--ink);box-shadow:none;border:1px solid var(--line);padding:8px 14px;font-weight:500}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:40px;margin-top:56px}
@@ -50,20 +50,19 @@ header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 24px;justify-co
 .item .t:before,.ub .t:before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ink);margin-right:5px;vertical-align:middle;position:relative;top:-1px}
 .item.nodot .t:before,.ub .t:before{display:none}
 .dots{display:none}
-.more{font-size:11px;color:var(--sub);text-decoration:underline;margin-top:8px;display:block}
+.more{font-size:11px;color:var(--sub);margin-top:8px;display:block}
 aside{border-left:1px solid var(--line);padding-left:28px;min-width:0}
 aside h2{font:700 22px Barlow,"Noto Sans KR",sans-serif;margin:0 0 4px}
 aside .d{color:var(--sub);margin-bottom:16px}
 .item{border-bottom:1px solid var(--line);padding:12px 0}
 .item{position:relative}
 .item.edit{cursor:pointer;padding-right:52px}
-.editbtn{position:absolute;right:0;top:12px;border:0;background:none;padding:0;font-size:12px;color:var(--sub);text-decoration:underline;cursor:pointer}
+.editbtn{position:absolute;right:0;top:12px;border:0;background:none;padding:0;font-size:12px;color:var(--sub);cursor:pointer}
 .editbtn:hover{color:var(--ink);border-color:var(--ink)}
-.item.edit:hover .t{text-decoration:underline}
 .item .t{font-weight:700;display:block}
 .item .m{color:var(--sub);font-size:12px}
 .memo{white-space:pre-line;overflow-wrap:anywhere}
-.memo a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.memo a{color:var(--accent);text-decoration:none}
 .empty{color:var(--sub);padding:12px 0}
 .sec{font-weight:700;margin:24px 0 4px}
 dialog{border:0;border-radius:6px;padding:0;width:min(440px,calc(100% - 24px));background:var(--bg);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -73,17 +72,18 @@ form h3{margin:0;font:700 20px Barlow,"Noto Sans KR",sans-serif}
 label,.fld{display:grid;gap:4px;font-size:12px;color:var(--sub)}
 input,select,textarea{border:1px solid var(--line);background:var(--bg);padding:9px 10px;border-radius:3px;font-size:14px}
 .chips{display:flex;flex-wrap:wrap;gap:2px 16px}
-.chip{border:0;background:none;border-radius:0;padding:5px 0;cursor:pointer;font-size:14px;color:var(--sub);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:5px;text-decoration-thickness:2px}
-.chip[aria-pressed="true"]{color:var(--ink);font-weight:700;text-decoration-color:var(--accent)}
+.chip{border:0;background:none;border-radius:0;padding:5px 0;cursor:pointer;font-size:14px;color:var(--sub)}
+.chip[aria-pressed="true"]{color:var(--accent);font-weight:700}
 .lnks{margin:16px 0 0;display:flex;flex-wrap:wrap;gap:6px 16px}
-.lnk{border:0;background:none;padding:0;font-size:12px;color:var(--sub);text-decoration:underline;cursor:pointer}
+.lnk{border:0;background:none;padding:0;font-size:12px;color:var(--sub);cursor:pointer}
 .lnk:hover{color:var(--ink)}
 #up{display:none}
 input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 .acts .del{margin-right:auto;color:var(--accent);border-color:var(--accent)}
 .foot{margin-top:64px;color:var(--sub);font-size:12px;display:flex;gap:12px;align-items:center}
-.foot button{border:0;background:none;color:var(--sub);cursor:pointer;text-decoration:underline;padding:0;font-size:12px}
+#count:empty{display:none}
+.foot button{border:0;background:none;color:var(--sub);cursor:pointer;padding:0;font-size:12px}
 @media(max-width:900px){
 .layout{grid-template-columns:1fr;margin-top:28px}
 .layout{gap:18px}
@@ -107,13 +107,13 @@ aside.nosel,aside .act-clear{display:none}
 .urow .editbtn{position:static;flex:none}
 #up .empty{padding:6px 0 12px;font-size:13px}
 }
-@media(max-width:640px){.wrap{padding:32px 18px 56px}.site{font-size:28px;margin-bottom:22px}.mo{font-size:24px}.lead{margin-top:18px}.dow,.week{--g:0px}
+@media(max-width:640px){.wrap{padding:32px 18px 56px}.site{font-size:28px;margin-bottom:22px}.mo{font-size:24px}.nav{top:1.2px}.lead{margin-top:18px}.dow,.week{--g:0px}
 .dow div{text-align:center;padding-bottom:10px}
 .cell,.cell.out,.cell.today,.cell.sel{border-top:1px solid var(--line)}
 .cell{height:120px;padding:10px 2px 0;align-items:stretch;text-align:left}
 .cell:hover{background:none}
 .num{font-size:15px;line-height:28px;height:28px;margin:0 auto 3px;text-align:center}
-.cell.sel .num{font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.cell.sel .num{font-weight:700}
 .ev{font-size:10px;gap:3px;margin-top:4px;line-height:1.3}
 .ev:before{width:4px;height:4px;margin-top:.45em}
 .evb i{display:none}
@@ -128,7 +128,7 @@ aside.nosel,aside .act-clear{display:none}
 <header>
   <div>
     <h1 class="site">Hearts2Hearts <span>Schedule</span></h1>
-    <div class="tb"><h2 id="title" class="mo"></h2><div class="nav"><button id="prev" aria-label="이전 달">‹</button><button class="tdot" id="goToday" aria-label="오늘" title="오늘"></button><button id="next" aria-label="다음 달">›</button><button class="today" id="add" hidden>일정 등록</button></div></div>
+    <div class="tb"><h2 id="title" class="mo"></h2><div class="nav"><button id="prev" aria-label="이전 달"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button class="tdot" id="goToday" aria-label="오늘" title="오늘"></button><button id="next" aria-label="다음 달"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
     <p class="lead">하츠투하츠의 모든 일정을 한곳에서 모아봐요.<br>날짜를 누르면 그날의 일정을 볼 수 있어요.</p>
   </div>
 </header>
@@ -137,7 +137,7 @@ aside.nosel,aside .act-clear{display:none}
   <main><div class="dow" id="dow"></div><div id="grid"></div></main>
   <aside id="side"></aside>
 </div>
-<div class="foot"><span id="count"></span><button id="auth">관리자</button></div>
+<div class="foot"><span id="count"></span><button id="add" hidden>일정 등록</button><button id="auth">관리자</button></div>
 </div>
 
 <dialog id="dlg">
