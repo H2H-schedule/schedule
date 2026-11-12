@@ -12,32 +12,42 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.5 "Noto Sans KR",system-ui,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
-.wrap{max-width:1240px;margin:0 auto;padding:32px 24px 48px}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 24px 44px}
 header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 24px;justify-content:space-between}
 h1{font:700 44px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02em}
-.lead{color:var(--sub);margin:10px 0 0;max-width:420px}
-.nav{display:flex;align-items:center;gap:6px;margin-top:14px}
-.nav button{border:0;background:none;width:32px;height:32px;cursor:pointer;font-size:18px;border-radius:50%}
+.tb{display:flex;align-items:center;flex-wrap:wrap;gap:8px 22px}
+.lead{color:var(--sub);font-size:13px;line-height:1.6;margin:12px 0 0;max-width:420px}
+.nav{display:flex;align-items:center;gap:2px}
+.nav button{border:0;background:none;width:30px;height:30px;cursor:pointer;font-size:18px;line-height:1;border-radius:50%}
+.nav .tdot{display:flex;align-items:center;justify-content:center}
+.nav .tdot:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
 .nav button:hover{background:var(--surface)}
-.nav .today{width:auto;padding:0 8px;font-size:13px;border-radius:0;color:var(--sub)}
+.nav .today{width:auto;padding:0 8px;margin-left:10px;font-size:13px;border-radius:0;color:var(--sub)}
 .nav .today:hover{background:none;color:var(--ink);text-decoration:underline}
 .btn{background:var(--btn);color:var(--btnink);border:0;padding:12px 22px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.16);border-radius:3px}
 .btn.ghost{background:none;color:var(--ink);box-shadow:none;border:1px solid var(--line);padding:8px 14px;font-weight:500}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;margin-top:36px}
-.dow,.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 12px}
-.dow div{font:600 12px Barlow,sans-serif;color:var(--sub);padding-bottom:8px;letter-spacing:.04em}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;margin-top:30px}
+.dow,.week{--g:12px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 var(--g)}
+.dow div{font:600 12px Barlow,sans-serif;color:var(--sub);padding-bottom:10px;letter-spacing:.04em}
 .dow .sun,.num.sun{color:var(--accent)}
-.cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:8px 6px 0;height:132px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%}
+.cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:9px 0 0;height:170px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%}
 .cell>*{flex:none}
 .cell:hover{background:var(--surface)}
 .cell.out{border-top-color:var(--line)}
-.cell.out .num{color:#bbb}
-.cell.sel{background:var(--sel)}
+.cell.out .num{color:var(--sub);opacity:.75}
+.cell.sel{background:var(--sel);border-top-color:var(--accent);width:calc(100% + var(--g));margin-left:calc(var(--g)/-2);padding-left:calc(var(--g)/2);padding-right:calc(var(--g)/2)}
+.cell.sel .num{color:var(--accent)}
 .cell.today{border-top-color:var(--accent)}
 .cell.today .num{color:var(--accent)}
-.num{font:600 26px/1 Barlow,sans-serif;display:block;margin-bottom:8px}
-.ev{display:block;font-size:12px;line-height:1.35;margin-top:6px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.more{font-size:11px;color:var(--sub);text-decoration:underline;margin-top:6px;display:block}
+.num{font:500 26px/1 Barlow,sans-serif;display:block;margin-bottom:4px}
+.ev{display:flex;gap:6px;margin-top:9px;font-size:12px;line-height:1.35;text-align:left}
+.ev:before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:var(--ink);margin-top:.55em}
+.evb{min-width:0;flex:1}
+.evb b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-weight:700;word-break:keep-all;overflow-wrap:anywhere}
+.evb i{display:block;font-style:normal;font-size:11px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.item .t:before,.ub .t:before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ink);margin-right:5px;vertical-align:middle;position:relative;top:-1px}
+.dots{display:none}
+.more{font-size:11px;color:var(--sub);text-decoration:underline;margin-top:8px;display:block}
 aside{border-left:1px solid var(--line);padding-left:28px;min-width:0}
 aside h2{font:700 22px Barlow,"Noto Sans KR",sans-serif;margin:0 0 4px}
 aside .d{color:var(--sub);margin-bottom:16px}
@@ -71,9 +81,16 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .foot button{border:0;background:none;color:var(--sub);cursor:pointer;text-decoration:underline;padding:0;font-size:12px}
 @media(max-width:900px){
 .layout{grid-template-columns:1fr;margin-top:24px}
-aside{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:20px}
+.layout{gap:18px}
+aside{border-left:0;padding-left:0;border-top:0;padding-top:0}
+aside h2{font-size:18px}
+aside .d{font-size:12px;margin-bottom:10px}
+aside .item{background:var(--surface);border:0;border-radius:14px;padding:12px 14px;margin-bottom:8px}
+aside .item.edit{padding-right:62px}
+aside .editbtn{right:12px;top:12px}
+aside .empty{background:var(--surface);border-radius:14px;padding:16px;text-align:center;font-size:13px}
 aside.nosel,aside .act-clear{display:none}
-#up{display:block;margin-top:22px;background:var(--surface);border-radius:16px;padding:14px 14px 4px}
+#up{display:block;margin-top:22px;background:var(--surface);border-radius:20px;padding:16px 16px 6px}
 .uhead{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .uhead:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
 .urow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
@@ -88,16 +105,30 @@ aside.nosel,aside .act-clear{display:none}
 .urow .editbtn{position:static;flex:none}
 #up .empty{padding:6px 0 12px;font-size:13px}
 }
-@media(max-width:640px){.wrap{padding:20px 12px 40px}h1{font-size:32px}.dow,.week{gap:0 4px}.cell{height:100px;padding:6px 3px 0}.num{font-size:18px}.ev{font-size:10px}}
+@media(max-width:640px){.wrap{padding:20px 12px 40px}h1{font-size:32px}.dow,.week{--g:0px}
+.dow div{text-align:center;padding-bottom:6px}
+.cell,.cell.out,.cell.today,.cell.sel{border-top:1px solid var(--line)}
+.cell{height:112px;padding:8px 2px 0;align-items:stretch;text-align:left}
+.cell:hover{background:none}
+.cell.sel{width:100%;margin-left:0;padding:8px 2px 0;background:none}
+.num{font-size:15px;line-height:28px;width:28px;height:28px;margin:0 auto 3px;border-radius:50%;text-align:center}
+.cell.today .num{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.cell.sel .num{background:var(--accent);color:#fff;box-shadow:none}
+.ev{font-size:10px;gap:3px;margin-top:4px;line-height:1.3}
+.ev:before{width:4px;height:4px;margin-top:.45em}
+.evb i{display:none}
+.evb b{-webkit-line-clamp:2}
+.more{font-size:10px;margin-top:4px;text-align:center}
+.cell.out .ev,.cell.out .more{opacity:.5}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
   <div>
-    <h1 id="title"></h1>
+    <div class="tb"><h1 id="title"></h1><div class="nav"><button id="prev" aria-label="이전 달">‹</button><button class="tdot" id="goToday" aria-label="오늘" title="오늘"></button><button id="next" aria-label="다음 달">›</button><button class="today" id="add" hidden>일정 등록</button></div></div>
     <p class="lead">하츠투하츠의 모든 일정을 한곳에서 모아봐요.<br>날짜를 누르면 그날의 일정을 볼 수 있어요.</p>
-    <div class="nav"><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button><button class="today" id="goToday">today</button><button class="today" id="add" hidden>일정 등록</button></div>
   </div>
 </header>
 <section id="up" aria-label="다가오는 일정"></section>
@@ -158,10 +189,10 @@ function render(){
     let row='';
     for(let i=0;i<7;i++){
       const d=new Date(start);d.setDate(start.getDate()+w*7+i);
-      const s=ymd(d),out=d.getMonth()!==m,list=by[s]||[],cap=list.length>3?2:3;
-      const shown=list.slice(0,cap).map(e=>`<span class="ev" title="${esc(e.title)}">${esc(e.title)}</span>`).join('');
-      const more=list.length>3?`<span class="more">외 ${list.length-2}개</span>`:'';
-      row+=`<button class="cell${out?' out':''}${s===today?' today':''}${s===sel?' sel':''}" data-d="${s}" aria-label="${s} 일정 ${list.length}개"><span class="num${i==6?' sun':''}">${pad(d.getDate())}</span>${shown}${more}</button>`;
+      const s=ymd(d),out=d.getMonth()!==m,list=by[s]||[],cap=2;
+      const shown=list.slice(0,cap).map(e=>{const meta=[e.type,e.members.length?e.members.join(', '):''].filter(Boolean).join(' · ');return `<span class="ev" title="${esc(e.title)}"><span class="evb"><b>${esc(e.title)}</b><i>${esc(meta)}</i></span></span>`}).join('');
+      const more=list.length>cap?`<span class="more">외 ${list.length-cap}개</span>`:'';
+      row+=`<button class="cell${out?' out':''}${s===today?' today':''}${s===sel?' sel':''}" data-d="${s}" aria-label="${s} 일정 ${list.length}개"><span class="num${i==6?' sun':''}">${pad(d.getDate())}</span><span class="dots">${list.slice(0,3).map(()=>"<i></i>").join("")}</span>${shown}${more}</button>`;
     }
     html+=`<div class="week">${row}</div>`;
   }
