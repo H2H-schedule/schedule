@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>하츠투하츠 스케줄 아카이브</title>
+<title>Hearts2Hearts Schedule</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -12,11 +12,13 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.5 "Noto Sans KR",system-ui,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
-.wrap{max-width:1240px;margin:0 auto;padding:28px 24px 44px}
+.wrap{max-width:1240px;margin:0 auto;padding:44px 28px 72px}
 header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 24px;justify-content:space-between}
-h1{font:700 44px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02em}
+.site{font:700 40px/1.1 Barlow,"Noto Sans KR",sans-serif;margin:0 0 30px;letter-spacing:-.02em}
+.site span{font-weight:500}
+.mo{font:700 30px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02em}
 .tb{display:flex;align-items:center;flex-wrap:wrap;gap:8px 22px}
-.lead{color:var(--sub);font-size:13px;line-height:1.6;margin:12px 0 0;max-width:420px}
+.lead{color:var(--sub);font-size:13px;line-height:1.7;margin:22px 0 0;max-width:420px}
 .nav{display:flex;align-items:center;gap:2px}
 .nav button{border:0;background:none;width:30px;height:30px;cursor:pointer;font-size:18px;line-height:1;border-radius:50%}
 .nav .tdot{display:flex;align-items:center;justify-content:center}
@@ -26,9 +28,9 @@ h1{font:700 44px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02
 .nav .today:hover{background:none;color:var(--ink);text-decoration:underline}
 .btn{background:var(--btn);color:var(--btnink);border:0;padding:12px 22px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.16);border-radius:3px}
 .btn.ghost{background:none;color:var(--ink);box-shadow:none;border:1px solid var(--line);padding:8px 14px;font-weight:500}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;margin-top:30px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:40px;margin-top:56px}
 .dow,.week{--g:12px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 var(--g)}
-.dow div{font:600 12px Barlow,sans-serif;color:var(--sub);padding-bottom:10px;letter-spacing:.04em}
+.dow div{font:600 12px Barlow,sans-serif;color:var(--sub);padding-bottom:16px;letter-spacing:.04em}
 .dow .sun,.num.sun{color:var(--accent)}
 .cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:9px 0 0;height:170px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%}
 .cell>*{flex:none}
@@ -46,6 +48,7 @@ h1{font:700 44px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02
 .evb b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-weight:700;word-break:keep-all;overflow-wrap:anywhere}
 .evb i{display:block;font-style:normal;font-size:11px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
 .item .t:before,.ub .t:before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ink);margin-right:5px;vertical-align:middle;position:relative;top:-1px}
+.item.nodot .t:before,.ub .t:before{display:none}
 .dots{display:none}
 .more{font-size:11px;color:var(--sub);text-decoration:underline;margin-top:8px;display:block}
 aside{border-left:1px solid var(--line);padding-left:28px;min-width:0}
@@ -59,6 +62,8 @@ aside .d{color:var(--sub);margin-bottom:16px}
 .item.edit:hover .t{text-decoration:underline}
 .item .t{font-weight:700;display:block}
 .item .m{color:var(--sub);font-size:12px}
+.memo{white-space:pre-line;overflow-wrap:anywhere}
+.memo a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
 .empty{color:var(--sub);padding:12px 0}
 .sec{font-weight:700;margin:24px 0 4px}
 dialog{border:0;border-radius:6px;padding:0;width:min(440px,calc(100% - 24px));background:var(--bg);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -77,20 +82,20 @@ input,select,textarea{border:1px solid var(--line);background:var(--bg);padding:
 input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 .acts .del{margin-right:auto;color:var(--accent);border-color:var(--accent)}
-.foot{margin-top:40px;color:var(--sub);font-size:12px;display:flex;gap:12px;align-items:center}
+.foot{margin-top:64px;color:var(--sub);font-size:12px;display:flex;gap:12px;align-items:center}
 .foot button{border:0;background:none;color:var(--sub);cursor:pointer;text-decoration:underline;padding:0;font-size:12px}
 @media(max-width:900px){
-.layout{grid-template-columns:1fr;margin-top:16px}
+.layout{grid-template-columns:1fr;margin-top:28px}
 .layout{gap:18px}
 aside{border-left:0;padding-left:0;border-top:0;padding-top:0}
 aside h2{font-size:18px}
 aside .d{font-size:12px;margin-bottom:10px}
 aside .empty{font-size:13px}
 aside.nosel,aside .act-clear{display:none}
-#up{display:block;margin-top:20px;padding:0 0 10px;border-bottom:1px solid var(--line)}
-.uhead{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+#up{display:block;margin-top:32px;padding:0 0 18px;border-bottom:1px solid var(--line)}
+.uhead{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:10px}
 .uhead:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
-.urow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.urow{display:flex;align-items:center;gap:14px;padding:15px 0;border-top:1px solid var(--line);cursor:pointer}
 .uhead+.urow{border-top:0}
 .ud{flex:none;width:44px;text-align:left;line-height:1.1}
 .ud b{display:block;font:700 15px Barlow,sans-serif}
@@ -102,10 +107,10 @@ aside.nosel,aside .act-clear{display:none}
 .urow .editbtn{position:static;flex:none}
 #up .empty{padding:6px 0 12px;font-size:13px}
 }
-@media(max-width:640px){.wrap{padding:20px 12px 40px}h1{font-size:32px}.dow,.week{--g:0px}
-.dow div{text-align:center;padding-bottom:6px}
+@media(max-width:640px){.wrap{padding:32px 18px 56px}.site{font-size:28px;margin-bottom:22px}.mo{font-size:24px}.lead{margin-top:18px}.dow,.week{--g:0px}
+.dow div{text-align:center;padding-bottom:10px}
 .cell,.cell.out,.cell.today,.cell.sel{border-top:1px solid var(--line)}
-.cell{height:112px;padding:8px 2px 0;align-items:stretch;text-align:left}
+.cell{height:120px;padding:10px 2px 0;align-items:stretch;text-align:left}
 .cell:hover{background:none}
 .num{font-size:15px;line-height:28px;height:28px;margin:0 auto 3px;text-align:center}
 .cell.sel .num{font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
@@ -122,7 +127,8 @@ aside.nosel,aside .act-clear{display:none}
 <div class="wrap">
 <header>
   <div>
-    <div class="tb"><h1 id="title"></h1><div class="nav"><button id="prev" aria-label="이전 달">‹</button><button class="tdot" id="goToday" aria-label="오늘" title="오늘"></button><button id="next" aria-label="다음 달">›</button><button class="today" id="add" hidden>일정 등록</button></div></div>
+    <h1 class="site">Hearts2Hearts <span>Schedule</span></h1>
+    <div class="tb"><h2 id="title" class="mo"></h2><div class="nav"><button id="prev" aria-label="이전 달">‹</button><button class="tdot" id="goToday" aria-label="오늘" title="오늘"></button><button id="next" aria-label="다음 달">›</button><button class="today" id="add" hidden>일정 등록</button></div></div>
     <p class="lead">하츠투하츠의 모든 일정을 한곳에서 모아봐요.<br>날짜를 누르면 그날의 일정을 볼 수 있어요.</p>
   </div>
 </header>
@@ -159,6 +165,7 @@ const $=id=>document.getElementById(id);
 const pad=n=>String(n).padStart(2,'0');
 const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const linkify=t=>esc(t).replace(/https?:\/\/[^\s<]+/g,u=>{const m=u.match(/[.,;:!?)\]]+$/),tail=m?m[0]:'',url=tail?u.slice(0,-tail.length):u;return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>${tail}`});
 const DOW=['월','화','수','목','금','토','일'];
 const TK='h2h-gh-token';
 const getTok=()=>{try{return localStorage.getItem(TK)||''}catch(e){return''}};
@@ -192,7 +199,7 @@ function render(){
     html+=`<div class="week">${row}</div>`;
   }
   $('grid').innerHTML=html;
-  $('count').textContent=status||('등록된 일정 '+events.length+'개');
+  $('count').textContent=status;
   $('add').hidden=!isAdmin();
   $('auth').textContent=isAdmin()?'관리자 모드 끄기':'관리자';
   side();renderUp();$('side').classList.toggle('nosel',!sel);
@@ -206,7 +213,7 @@ function renderUp(){
 }
 function itemHtml(e,showDate,noEdit){
   const meta=[showDate?e.date:'',e.type,e.members.length?e.members.join(', '):''].filter(Boolean).join(' · ');
-  return `<div class="item${isAdmin()&&!noEdit?' edit':''}" data-id="${esc(e.id)}">${isAdmin()&&!noEdit?'<button type="button" class="editbtn">수정</button>':''}<span class="t">${esc(e.title)}</span><span class="m">${esc(meta)}</span>${e.memo?`<div class="m">${esc(e.memo)}</div>`:''}</div>`;
+  return `<div class="item${isAdmin()&&!noEdit?' edit':''}${noEdit?' nodot':''}" data-id="${esc(e.id)}">${isAdmin()&&!noEdit?'<button type="button" class="editbtn">수정</button>':''}<span class="t">${esc(e.title)}</span><span class="m">${esc(meta)}</span>${e.memo?`<div class="m memo">${linkify(e.memo)}</div>`:''}</div>`;
 }
 function side(){
   const evs=events.slice().sort((a,b)=>a.date.localeCompare(b.date));
@@ -263,6 +270,7 @@ $('up').onclick=e=>{
 $('side').onclick=e=>{
   if(e.target.closest('.act-add'))return openForm(null,sel);
   if(e.target.closest('.act-clear')){sel=null;return render()}
+  if(e.target.closest('a'))return;
   const it=e.target.closest('.item.edit');
   if(it){const x=events.find(v=>v.id===it.dataset.id);if(x)openForm(x)}
 };
