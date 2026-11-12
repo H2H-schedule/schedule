@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>하츠투하츠 스케줄 아카이브</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--surface:#f7f6f4;--ink:#1c1c1c;--sub:#777;--line:#e6e4e1;--accent:#ff4d6d;--btn:#1c1c1c;--btnink:#fff;--sel:#f3efe9}
+@media(prefers-color-scheme:dark){:root{--bg:#161616;--surface:#202020;--ink:#f1f1f1;--sub:#9a9a9a;--line:#333;--btn:#f1f1f1;--btnink:#161616;--sel:#262320;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.5 "Noto Sans KR",system-ui,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:32px 24px 48px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 24px;justify-content:space-between}
+h1{font:700 44px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02em}
+.lead{color:var(--sub);margin:10px 0 0;max-width:420px}
+.nav{display:flex;align-items:center;gap:6px;margin-top:14px}
+.nav button{border:0;background:none;width:32px;height:32px;cursor:pointer;font-size:18px;border-radius:50%}
+.nav button:hover{background:var(--surface)}
+.nav .today{width:auto;padding:0 8px;font-size:13px;border-radius:0;color:var(--sub)}
+.nav .today:hover{background:none;color:var(--ink);text-decoration:underline}
+.btn{background:var(--btn);color:var(--btnink);border:0;padding:12px 22px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.16);border-radius:3px}
+.btn.ghost{background:none;color:var(--ink);box-shadow:none;border:1px solid var(--line);padding:8px 14px;font-weight:500}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;margin-top:36px}
+.dow,.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 12px}
+.dow div{font:600 12px Barlow,sans-serif;color:var(--sub);padding-bottom:8px;letter-spacing:.04em}
+.dow .sun,.num.sun{color:var(--accent)}
+.cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:8px 6px 0;height:132px;overflow:hidden;cursor:pointer;display:block;width:100%}
+.cell:hover{background:var(--surface)}
+.cell.out{border-top-color:var(--line)}
+.cell.out .num{color:#bbb}
+.cell.sel{background:var(--sel)}
+.cell.today{border-top-color:var(--accent)}
+.cell.today .num{color:var(--accent)}
+.num{font:600 26px/1 Barlow,sans-serif;display:block;margin-bottom:8px}
+.ev{display:block;font-size:12px;line-height:1.35;margin-top:6px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.more{font-size:11px;color:var(--sub);text-decoration:underline;margin-top:6px;display:block}
+aside{border-left:1px solid var(--line);padding-left:28px;min-width:0}
+aside h2{font:700 22px Barlow,"Noto Sans KR",sans-serif;margin:0 0 4px}
+aside .d{color:var(--sub);margin-bottom:16px}
+.item{border-bottom:1px solid var(--line);padding:12px 0}
+.item.edit{cursor:pointer}
+.item.edit:hover .t{text-decoration:underline}
+.item .t{font-weight:700;display:block}
+.item .m{color:var(--sub);font-size:12px}
+.empty{color:var(--sub);padding:12px 0}
+.sec{font-weight:700;margin:24px 0 4px}
+dialog{border:0;border-radius:6px;padding:0;width:min(440px,calc(100% - 24px));background:var(--bg);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+form{padding:24px;display:grid;gap:14px}
+form h3{margin:0;font:700 20px Barlow,"Noto Sans KR",sans-serif}
+label{display:grid;gap:4px;font-size:12px;color:var(--sub)}
+input,select,textarea{border:1px solid var(--line);background:var(--bg);padding:9px 10px;border-radius:3px;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:none;border-radius:16px;padding:3px 12px;cursor:pointer;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.acts{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.acts .del{margin-right:auto;color:var(--accent);border-color:var(--accent)}
+.foot{margin-top:40px;color:var(--sub);font-size:12px;display:flex;gap:12px;align-items:center}
+.foot button{border:0;background:none;color:var(--sub);cursor:pointer;text-decoration:underline;padding:0;font-size:12px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}aside{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:20px}}
+@media(max-width:640px){.wrap{padding:20px 12px 40px}h1{font-size:32px}.dow,.week{gap:0 4px}.cell{height:100px;padding:6px 3px 0}.num{font-size:18px}.ev{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1 id="title"></h1>
+    <p class="lead">하츠투하츠의 모든 일정을 한곳에서 모아봐요. 날짜를 누르면 그날의 일정을 볼 수 있어요.</p>
+    <div class="nav"><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button><button class="today" id="goToday">today</button></div>
+  </div>
+  <button class="btn" id="add" hidden>일정 등록</button>
+</header>
+<div class="layout">
+  <main><div class="dow" id="dow"></div><div id="grid"></div></main>
+  <aside id="side"></aside>
+</div>
+<div class="foot"><span id="count"></span><button id="auth">관리자</button></div>
+</div>
+
+<dialog id="dlg">
+<form id="f" method="dialog">
+  <h3 id="ft">일정 등록</h3>
+  <label>제목<input id="fTitle" required maxlength="120"></label>
+  <label>날짜<input id="fDate" type="date" required></label>
+  <label>종류<select id="fType"></select></label>
+  <label>멤버 (선택하지 않으면 전체)<div class="chips" id="fMem"></div></label>
+  <label>메모 (선택)<textarea id="fMemo" rows="3"></textarea></label>
+  <div class="acts">
+    <button type="button" class="btn ghost del" id="fDel">삭제</button>
+    <button type="button" class="btn ghost" id="fCancel">취소</button>
+    <button type="submit" class="btn" id="fSave">저장</button>
+  </div>
+</form>
+</dialog>
+
+<script>
+/* ▼ 본인 저장소 정보로 바꾸세요 ▼ */
+const CFG={owner:"H2H-schedule",repo:"schedule",branch:"main",path:"schedule.json"};
+/* ▲ ▲ ▲ */
+
+const $=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DOW=['월','화','수','목','금','토','일'];
+const TK='h2h-gh-token';
+const getTok=()=>{try{return localStorage.getItem(TK)||''}catch(e){return''}};
+const TYPES=['방송','라디오','콘텐츠','공연·행사','팬사인회','영상통화회','음반·발매','이벤트','잡지','기념일','기타'];
+const MEMBERS=['카르멘','지우','유하','스텔라','주은','에이나','이안','예온'];
+function toList(j){
+  return (Array.isArray(j)?j:[]).filter(x=>x&&x.title&&x.date).map((x,i)=>({id:x.id||'a'+i,date:x.date,title:x.title,type:x.type||'기타',members:x.members||[],memo:x.memo||''}));
+}
+let data={},events=[],view=new Date(),sel=null,editing=null,status='';
+view.setDate(1);
+
+function build(){events=toList(data)}
+const isAdmin=()=>!!getTok();
+
+function render(){
+  $('title').textContent=view.getFullYear()+'.'+pad(view.getMonth()+1);
+  $('dow').innerHTML=DOW.map((d,i)=>`<div class="${i==6?'sun':''}">${d}</div>`).join('');
+  const y=view.getFullYear(),m=view.getMonth(),first=new Date(y,m,1),off=(first.getDay()+6)%7;
+  const weeks=Math.ceil((off+new Date(y,m+1,0).getDate())/7),start=new Date(first);start.setDate(1-off);
+  const by={};events.forEach(e=>(by[e.date]=by[e.date]||[]).push(e));
+  const today=ymd(new Date());let html='';
+  for(let w=0;w<weeks;w++){
+    let row='';
+    for(let i=0;i<7;i++){
+      const d=new Date(start);d.setDate(start.getDate()+w*7+i);
+      const s=ymd(d),out=d.getMonth()!==m,list=by[s]||[],cap=list.length>3?2:3;
+      const shown=list.slice(0,cap).map(e=>`<span class="ev" title="${esc(e.title)}">${esc(e.title)}</span>`).join('');
+      const more=list.length>3?`<span class="more">외 ${list.length-2}개</span>`:'';
+      row+=`<button class="cell${out?' out':''}${s===today?' today':''}${s===sel?' sel':''}" data-d="${s}" aria-label="${s} 일정 ${list.length}개"><span class="num${i==6?' sun':''}">${pad(d.getDate())}</span>${shown}${more}</button>`;
+    }
+    html+=`<div class="week">${row}</div>`;
+  }
+  $('grid').innerHTML=html;
+  $('count').textContent=status||('등록된 일정 '+events.length+'개');
+  $('add').hidden=!isAdmin();
+  $('auth').textContent=isAdmin()?'관리자 모드 끄기':'관리자';
+  side();
+}
+function itemHtml(e,showDate){
+  const meta=[showDate?e.date:'',e.type,e.members.length?e.members.join(', '):''].filter(Boolean).join(' · ');
+  return `<div class="item${isAdmin()?' edit':''}" data-id="${esc(e.id)}"><span class="t">${esc(e.title)}</span><span class="m">${esc(meta)}</span>${e.memo?`<div class="m">${esc(e.memo)}</div>`:''}</div>`;
+}
+function side(){
+  const evs=events.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  if(sel){
+    const list=evs.filter(e=>e.date===sel),d=new Date(sel+'T00:00');
+    $('side').innerHTML=`<h2>${d.getMonth()+1}월 ${d.getDate()}일</h2><div class="d">${DOW[(d.getDay()+6)%7]}요일</div>`+(list.length?list.map(e=>itemHtml(e)).join(''):'<div class="empty">이 날은 등록된 일정이 없어요.</div>')+(isAdmin()?'<p><button class="btn ghost" id="addDay">이 날짜에 일정 등록</button></p>':'')+'<p><button class="btn ghost" id="clearSel">다가오는 일정 보기</button></p>';
+  }else{
+    const t=ymd(new Date()),up=evs.filter(e=>e.date>=t).slice(0,8),past=evs.filter(e=>e.date<t).slice(-4).reverse();
+    $('side').innerHTML='<h2>다가오는 일정</h2><div class="d">오늘 이후 등록된 일정</div>'+(up.length?up.map(e=>itemHtml(e,1)).join(''):'<div class="empty">다가오는 일정이 없어요.</div>')+(past.length?'<div class="sec">최근 지난 일정</div>'+past.map(e=>itemHtml(e,1)).join(''):'');
+  }
+}
+
+/* GitHub에 schedule.json 커밋 */
+async function commit(mut,msg){
+  const api=`https://api.github.com/repos/${CFG.owner}/${CFG.repo}/contents/${CFG.path}`;
+  const h={Authorization:'Bearer '+getTok(),Accept:'application/vnd.github+json'};
+  const r=await fetch(api+'?ref='+CFG.branch,{headers:h});if(!r.ok)throw new Error(r.status);
+  const j=await r.json();
+  const cur=toList(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,'')),c=>c.charCodeAt(0)))));
+  mut(cur);
+  const sorted=cur.sort((a,b)=>a.date.localeCompare(b.date));
+  const bytes=new TextEncoder().encode(JSON.stringify(sorted,null,2));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));
+  const p=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify({message:msg,content:btoa(bin),sha:j.sha,branch:CFG.branch})});
+  if(!p.ok)throw new Error(p.status);
+  data=sorted;build();render();
+}
+const removeId=(a,id)=>{const i=a.findIndex(x=>x.id===id);if(i>=0)a.splice(i,1)};
+
+function openForm(ev,date){
+  editing=ev||null;
+  $('ft').textContent=ev?'일정 수정':'일정 등록';
+  $('fTitle').value=ev?ev.title:'';
+  $('fDate').value=ev?ev.date:(date||sel||ymd(new Date()));
+  $('fType').innerHTML=TYPES.map(t=>`<option>${t}</option>`).join('');
+  $('fType').value=ev?ev.type:'방송';
+  $('fMemo').value=ev?ev.memo:'';
+  const ms=new Set(ev?ev.members:[]);
+  $('fMem').innerHTML=MEMBERS.map(m=>`<button type="button" class="chip" data-m="${m}" aria-pressed="${ms.has(m)}">${m}</button>`).join('');
+  $('fDel').style.display=ev?'':'none';
+  $('dlg').showModal();
+}
+$('grid').onclick=e=>{const c=e.target.closest('[data-d]');if(!c)return;sel=c.dataset.d;const d=new Date(sel+'T00:00');if(d.getMonth()!==view.getMonth())view=new Date(d.getFullYear(),d.getMonth(),1);render()};
+$('side').onclick=e=>{
+  if(e.target.id==='addDay')return openForm(null,sel);
+  if(e.target.id==='clearSel'){sel=null;return render()}
+  const it=e.target.closest('.item.edit');
+  if(it){const x=events.find(v=>v.id===it.dataset.id);if(x)openForm(x)}
+};
+$('prev').onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);render()};
+$('next').onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);render()};
+$('goToday').onclick=()=>{const n=new Date();view=new Date(n.getFullYear(),n.getMonth(),1);sel=ymd(n);render()};
+$('add').onclick=()=>openForm(null);
+$('fCancel').onclick=()=>$('dlg').close();
+$('fMem').onclick=e=>{const b=e.target.closest('[data-m]');if(b)b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')};
+$('fDel').onclick=async()=>{
+  if(!confirm('이 일정을 삭제할까요?'))return;
+  try{await commit(o=>removeId(o,editing.id),'일정 삭제');$('dlg').close()}catch(err){alert('삭제하지 못했어요. 토큰과 저장소 설정을 확인해 주세요. ('+err.message+')')}
+};
+$('f').onsubmit=async e=>{
+  e.preventDefault();
+  const t=$('fTitle').value.trim(),d=$('fDate').value;if(!t||!d)return;
+  const btn=$('fSave');btn.disabled=true;
+  try{
+    const rec={id:editing?editing.id:'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),date:d,title:t,type:$('fType').value,members:[...document.querySelectorAll('#fMem [aria-pressed="true"]')].map(b=>b.dataset.m),memo:$('fMemo').value.trim()};
+    await commit(o=>{removeId(o,rec.id);o.push(rec)},editing?'일정 수정':'일정 추가');
+    $('dlg').close();sel=d;const x=new Date(d+'T00:00');view=new Date(x.getFullYear(),x.getMonth(),1);render();
+  }catch(err){alert('저장하지 못했어요. 토큰과 저장소 설정을 확인해 주세요. ('+err.message+')')}
+  btn.disabled=false;
+};
+$('auth').onclick=()=>{
+  try{
+    if(isAdmin()){localStorage.removeItem(TK)}
+    else{const t=prompt('GitHub 토큰을 입력하세요. 이 브라우저에만 저장돼요.');if(t)localStorage.setItem(TK,t.trim())}
+  }catch(err){}
+  render();
+};
+
+fetch(CFG.path+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{data=j;build();render()}).catch(()=>{status='일정을 불러오지 못했어요.';render()});
+render();
+</script>
+</body>
+</html>
