@@ -9,7 +9,7 @@
 <style>
 :root{--bg:#fff;--surface:#f7f6f4;--ink:#1c1c1c;--sub:#777;--line:#e6e4e1;--accent:#ff4d6d;--btn:#1c1c1c;--btnink:#fff;--sel:#f3efe9}
 @media(prefers-color-scheme:dark){:root{--bg:#161616;--surface:#202020;--ink:#f1f1f1;--sub:#9a9a9a;--line:#333;--btn:#f1f1f1;--btnink:#161616;--sel:#262320;color-scheme:dark}}
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.5 "Noto Sans KR",system-ui,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
 .wrap{max-width:1240px;margin:0 auto;padding:28px 24px 44px}
@@ -21,7 +21,7 @@ h1{font:700 44px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02
 .nav button{border:0;background:none;width:30px;height:30px;cursor:pointer;font-size:18px;line-height:1;border-radius:50%}
 .nav .tdot{display:flex;align-items:center;justify-content:center}
 .nav .tdot:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
-.nav button:hover{background:var(--surface)}
+@media(hover:hover){.nav button:hover{background:var(--surface)}}
 .nav .today{width:auto;padding:0 8px;margin-left:10px;font-size:13px;border-radius:0;color:var(--sub)}
 .nav .today:hover{background:none;color:var(--ink);text-decoration:underline}
 .btn{background:var(--btn);color:var(--btnink);border:0;padding:12px 22px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.16);border-radius:3px}
@@ -32,10 +32,10 @@ h1{font:700 44px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02
 .dow .sun,.num.sun{color:var(--accent)}
 .cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:9px 0 0;height:170px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%}
 .cell>*{flex:none}
-.cell:hover{background:var(--surface)}
+@media(hover:hover){.cell:hover{background:var(--surface)}}
 .cell.out{border-top-color:var(--line)}
 .cell.out .num{color:var(--sub);opacity:.75}
-.cell.sel{background:var(--sel);border-top-color:var(--accent);width:calc(100% + var(--g));margin-left:calc(var(--g)/-2);padding-left:calc(var(--g)/2);padding-right:calc(var(--g)/2)}
+.cell.sel{border-top-color:var(--accent)}
 .cell.sel .num{color:var(--accent)}
 .cell.today{border-top-color:var(--accent)}
 .cell.today .num{color:var(--accent)}
@@ -54,7 +54,7 @@ aside .d{color:var(--sub);margin-bottom:16px}
 .item{border-bottom:1px solid var(--line);padding:12px 0}
 .item{position:relative}
 .item.edit{cursor:pointer;padding-right:52px}
-.editbtn{position:absolute;right:0;top:12px;border:1px solid var(--line);background:none;border-radius:3px;padding:2px 8px;font-size:12px;color:var(--sub);cursor:pointer}
+.editbtn{position:absolute;right:0;top:12px;border:0;background:none;padding:0;font-size:12px;color:var(--sub);text-decoration:underline;cursor:pointer}
 .editbtn:hover{color:var(--ink);border-color:var(--ink)}
 .item.edit:hover .t{text-decoration:underline}
 .item .t{font-weight:700;display:block}
@@ -85,17 +85,14 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 aside{border-left:0;padding-left:0;border-top:0;padding-top:0}
 aside h2{font-size:18px}
 aside .d{font-size:12px;margin-bottom:10px}
-aside .item{background:var(--surface);border:0;border-radius:14px;padding:12px 14px;margin-bottom:8px}
-aside .item.edit{padding-right:62px}
-aside .editbtn{right:12px;top:12px}
-aside .empty{background:var(--surface);border-radius:14px;padding:16px;text-align:center;font-size:13px}
+aside .empty{font-size:13px}
 aside.nosel,aside .act-clear{display:none}
-#up{display:block;margin-top:22px;background:var(--surface);border-radius:20px;padding:16px 16px 6px}
+#up{display:block;margin-top:22px;padding:14px 0 0;border-top:2px solid var(--ink)}
 .uhead{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .uhead:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
 .urow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
 .uhead+.urow{border-top:0}
-.ud{flex:none;width:48px;text-align:center;background:var(--bg);border-radius:10px;padding:6px 0;line-height:1.1}
+.ud{flex:none;width:44px;text-align:left;line-height:1.1}
 .ud b{display:block;font:700 15px Barlow,sans-serif}
 .ud i{display:block;font-style:normal;font-size:10px;color:var(--accent);margin-top:2px}
 .ub{min-width:0;flex:1}
@@ -110,10 +107,8 @@ aside.nosel,aside .act-clear{display:none}
 .cell,.cell.out,.cell.today,.cell.sel{border-top:1px solid var(--line)}
 .cell{height:112px;padding:8px 2px 0;align-items:stretch;text-align:left}
 .cell:hover{background:none}
-.cell.sel{width:100%;margin-left:0;padding:8px 2px 0;background:none}
-.num{font-size:15px;line-height:28px;width:28px;height:28px;margin:0 auto 3px;border-radius:50%;text-align:center}
-.cell.today .num{box-shadow:inset 0 0 0 1.5px var(--accent)}
-.cell.sel .num{background:var(--accent);color:#fff;box-shadow:none}
+.num{font-size:15px;line-height:28px;height:28px;margin:0 auto 3px;text-align:center}
+.cell.sel .num{font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
 .ev{font-size:10px;gap:3px;margin-top:4px;line-height:1.3}
 .ev:before{width:4px;height:4px;margin-top:.45em}
 .evb i{display:none}
@@ -206,12 +201,12 @@ function renderUp(){
   const t=ymd(new Date()),up=events.slice().sort((a,b)=>a.date.localeCompare(b.date)).filter(e=>e.date>=t).slice(0,3);
   $('up').innerHTML='<div class="uhead">다가오는 일정</div>'+(up.length?up.map(e=>{
     const d=new Date(e.date+'T00:00'),meta=[e.type,e.members.length?e.members.join(', '):''].filter(Boolean).join(' · ');
-    return `<div class="urow" data-d="${e.date}" data-id="${esc(e.id)}"><div class="ud"><b>${pad(d.getMonth()+1)}.${pad(d.getDate())}</b><i>${DOW[(d.getDay()+6)%7]}</i></div><div class="ub"><span class="t">${esc(e.title)}</span><span class="m">${esc(meta)}</span></div>${isAdmin()?'<button type="button" class="editbtn" data-edit>수정</button>':''}</div>`;
+    return `<div class="urow" data-d="${e.date}" data-id="${esc(e.id)}"><div class="ud"><b>${pad(d.getMonth()+1)}.${pad(d.getDate())}</b><i>${DOW[(d.getDay()+6)%7]}</i></div><div class="ub"><span class="t">${esc(e.title)}</span><span class="m">${esc(meta)}</span></div></div>`;
   }).join(''):'<div class="empty">다가오는 일정이 없어요.</div>');
 }
-function itemHtml(e,showDate){
+function itemHtml(e,showDate,noEdit){
   const meta=[showDate?e.date:'',e.type,e.members.length?e.members.join(', '):''].filter(Boolean).join(' · ');
-  return `<div class="item${isAdmin()?' edit':''}" data-id="${esc(e.id)}">${isAdmin()?'<button type="button" class="editbtn">수정</button>':''}<span class="t">${esc(e.title)}</span><span class="m">${esc(meta)}</span>${e.memo?`<div class="m">${esc(e.memo)}</div>`:''}</div>`;
+  return `<div class="item${isAdmin()&&!noEdit?' edit':''}" data-id="${esc(e.id)}">${isAdmin()&&!noEdit?'<button type="button" class="editbtn">수정</button>':''}<span class="t">${esc(e.title)}</span><span class="m">${esc(meta)}</span>${e.memo?`<div class="m">${esc(e.memo)}</div>`:''}</div>`;
 }
 function side(){
   const evs=events.slice().sort((a,b)=>a.date.localeCompare(b.date));
@@ -220,7 +215,7 @@ function side(){
     $('side').innerHTML=`<h2>${d.getMonth()+1}월 ${d.getDate()}일</h2><div class="d">${DOW[(d.getDay()+6)%7]}요일</div>`+(list.length?list.map(e=>itemHtml(e)).join(''):'<div class="empty">이 날은 등록된 일정이 없어요.</div>')+'<p class="lnks">'+(isAdmin()?'<button class="lnk act-add">이 날짜에 일정 등록</button>':'')+'<button class="lnk act-clear">다가오는 일정 보기</button></p>';
   }else{
     const t=ymd(new Date()),up=evs.filter(e=>e.date>=t).slice(0,5);
-    $('side').innerHTML='<h2>다가오는 일정</h2><div class="d">오늘 이후 등록된 일정</div>'+(up.length?up.map(e=>itemHtml(e,1)).join(''):'<div class="empty">다가오는 일정이 없어요.</div>');
+    $('side').innerHTML='<h2>다가오는 일정</h2><div class="d">오늘 이후 등록된 일정</div>'+(up.length?up.map(e=>itemHtml(e,1,1)).join(''):'<div class="empty">다가오는 일정이 없어요.</div>');
   }
 }
 
@@ -263,7 +258,6 @@ const showSide=()=>{if(mob()&&sel)$('side').scrollIntoView({behavior:'smooth',bl
 $('grid').onclick=e=>{const c=e.target.closest('[data-d]');if(!c)return;const s=c.dataset.d;if(mob()&&sel===s){sel=null;return render()}sel=s;const d=new Date(sel+'T00:00');if(d.getMonth()!==view.getMonth())view=new Date(d.getFullYear(),d.getMonth(),1);render();showSide()};
 $('up').onclick=e=>{
   const r=e.target.closest('.urow');if(!r)return;
-  if(e.target.closest('[data-edit]')){const x=events.find(v=>v.id===r.dataset.id);if(x)openForm(x);return}
   sel=r.dataset.d;const d=new Date(sel+'T00:00');view=new Date(d.getFullYear(),d.getMonth(),1);render();showSide();
 };
 $('side').onclick=e=>{
