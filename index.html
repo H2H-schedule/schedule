@@ -27,7 +27,8 @@ h1{font:700 44px/1 Barlow,"Noto Sans KR",sans-serif;margin:0;letter-spacing:-.02
 .dow,.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 12px}
 .dow div{font:600 12px Barlow,sans-serif;color:var(--sub);padding-bottom:8px;letter-spacing:.04em}
 .dow .sun,.num.sun{color:var(--accent)}
-.cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:8px 6px 0;height:132px;overflow:hidden;cursor:pointer;display:block;width:100%}
+.cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:8px 6px 0;height:132px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%}
+.cell>*{flex:none}
 .cell:hover{background:var(--surface)}
 .cell.out{border-top-color:var(--line)}
 .cell.out .num{color:#bbb}
@@ -71,9 +72,8 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
   <div>
     <h1 id="title"></h1>
     <p class="lead">하츠투하츠의 모든 일정을 한곳에서 모아봐요. 날짜를 누르면 그날의 일정을 볼 수 있어요.</p>
-    <div class="nav"><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button><button class="today" id="goToday">today</button></div>
+    <div class="nav"><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button><button class="today" id="goToday">today</button><button class="today" id="add" hidden>일정 등록</button></div>
   </div>
-  <button class="btn" id="add" hidden>일정 등록</button>
 </header>
 <div class="layout">
   <main><div class="dow" id="dow"></div><div id="grid"></div></main>
@@ -155,8 +155,8 @@ function side(){
     const list=evs.filter(e=>e.date===sel),d=new Date(sel+'T00:00');
     $('side').innerHTML=`<h2>${d.getMonth()+1}월 ${d.getDate()}일</h2><div class="d">${DOW[(d.getDay()+6)%7]}요일</div>`+(list.length?list.map(e=>itemHtml(e)).join(''):'<div class="empty">이 날은 등록된 일정이 없어요.</div>')+(isAdmin()?'<p><button class="btn ghost" id="addDay">이 날짜에 일정 등록</button></p>':'')+'<p><button class="btn ghost" id="clearSel">다가오는 일정 보기</button></p>';
   }else{
-    const t=ymd(new Date()),up=evs.filter(e=>e.date>=t).slice(0,8),past=evs.filter(e=>e.date<t).slice(-4).reverse();
-    $('side').innerHTML='<h2>다가오는 일정</h2><div class="d">오늘 이후 등록된 일정</div>'+(up.length?up.map(e=>itemHtml(e,1)).join(''):'<div class="empty">다가오는 일정이 없어요.</div>')+(past.length?'<div class="sec">최근 지난 일정</div>'+past.map(e=>itemHtml(e,1)).join(''):'');
+    const t=ymd(new Date()),up=evs.filter(e=>e.date>=t).slice(0,5);
+    $('side').innerHTML='<h2>다가오는 일정</h2><div class="d">오늘 이후 등록된 일정</div>'+(up.length?up.map(e=>itemHtml(e,1)).join(''):'<div class="empty">다가오는 일정이 없어요.</div>');
   }
 }
 
