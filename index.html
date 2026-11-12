@@ -72,7 +72,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 @media(max-width:900px){
 .layout{grid-template-columns:1fr;margin-top:24px}
 aside{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:20px}
-aside.nosel,#clearSel{display:none}
+aside.nosel,aside .act-clear{display:none}
 #up{display:block;margin-top:22px;background:var(--surface);border-radius:16px;padding:14px 14px 4px}
 .uhead{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .uhead:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
@@ -96,7 +96,7 @@ aside.nosel,#clearSel{display:none}
 <header>
   <div>
     <h1 id="title"></h1>
-    <p class="lead">하츠투하츠의 모든 일정을 한곳에서 모아봐요. 날짜를 누르면 그날의 일정을 볼 수 있어요.</p>
+    <p class="lead">하츠투하츠의 모든 일정을 한곳에서 모아봐요.<br>날짜를 누르면 그날의 일정을 볼 수 있어요.</p>
     <div class="nav"><button id="prev" aria-label="이전 달">‹</button><button id="next" aria-label="다음 달">›</button><button class="today" id="goToday">today</button><button class="today" id="add" hidden>일정 등록</button></div>
   </div>
 </header>
@@ -186,7 +186,7 @@ function side(){
   const evs=events.slice().sort((a,b)=>a.date.localeCompare(b.date));
   if(sel){
     const list=evs.filter(e=>e.date===sel),d=new Date(sel+'T00:00');
-    $('side').innerHTML=`<h2>${d.getMonth()+1}월 ${d.getDate()}일</h2><div class="d">${DOW[(d.getDay()+6)%7]}요일</div>`+(list.length?list.map(e=>itemHtml(e)).join(''):'<div class="empty">이 날은 등록된 일정이 없어요.</div>')+'<p class="lnks">'+(isAdmin()?'<button class="lnk" id="addDay">이 날짜에 일정 등록</button>':'')+'<button class="lnk" id="clearSel">다가오는 일정 보기</button></p>';
+    $('side').innerHTML=`<h2>${d.getMonth()+1}월 ${d.getDate()}일</h2><div class="d">${DOW[(d.getDay()+6)%7]}요일</div>`+(list.length?list.map(e=>itemHtml(e)).join(''):'<div class="empty">이 날은 등록된 일정이 없어요.</div>')+'<p class="lnks">'+(isAdmin()?'<button class="lnk act-add">이 날짜에 일정 등록</button>':'')+'<button class="lnk act-clear">다가오는 일정 보기</button></p>';
   }else{
     const t=ymd(new Date()),up=evs.filter(e=>e.date>=t).slice(0,5);
     $('side').innerHTML='<h2>다가오는 일정</h2><div class="d">오늘 이후 등록된 일정</div>'+(up.length?up.map(e=>itemHtml(e,1)).join(''):'<div class="empty">다가오는 일정이 없어요.</div>');
@@ -236,8 +236,8 @@ $('up').onclick=e=>{
   sel=r.dataset.d;const d=new Date(sel+'T00:00');view=new Date(d.getFullYear(),d.getMonth(),1);render();showSide();
 };
 $('side').onclick=e=>{
-  if(e.target.id==='addDay')return openForm(null,sel);
-  if(e.target.id==='clearSel'){sel=null;return render()}
+  if(e.target.closest('.act-add'))return openForm(null,sel);
+  if(e.target.closest('.act-clear')){sel=null;return render()}
   const it=e.target.closest('.item.edit');
   if(it){const x=events.find(v=>v.id===it.dataset.id);if(x)openForm(x)}
 };
