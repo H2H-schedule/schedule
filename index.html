@@ -84,6 +84,40 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .foot{margin-top:64px;color:var(--sub);font-size:12px;display:flex;gap:12px;align-items:center}
 #count:empty{display:none}
 .foot button{border:0;background:none;color:var(--sub);cursor:pointer;padding:0;font-size:12px}
+/* 검색 */
+.sbox{display:flex;align-items:center;gap:8px;width:260px;border-bottom:2px solid var(--ink);margin-bottom:2px;color:var(--sub);transition:border-color .15s,color .15s}
+.sbox:focus-within{border-bottom-color:var(--accent);color:var(--accent)}
+.sbox svg{flex:none}
+.sbox input{flex:1;min-width:0;border:0;background:none;border-radius:0;padding:8px 0;font-size:14px;color:var(--ink);-webkit-appearance:none;appearance:none}
+.sbox input:focus{outline:0}
+.sbox input::placeholder{color:var(--sub)}
+.sbox input::-webkit-search-cancel-button{display:none}
+.sx{display:none;flex:none;width:24px;height:24px;padding:0;border:0;background:none;color:var(--sub);cursor:pointer;border-radius:50%;align-items:center;justify-content:center}
+.sbox.has .sx{display:flex}
+@media(hover:hover){.sx:hover{background:var(--surface);color:var(--ink)}}
+#sr{display:none;margin-top:44px}
+body.searching #sr{display:block}
+body.searching #up,body.searching .layout{display:none}
+.sh{display:flex;align-items:baseline;gap:10px}
+.sh h2{font:700 22px Barlow,"Noto Sans KR",sans-serif;margin:0}
+.sh .d{color:var(--sub)}
+.sg{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;margin:26px 0 4px}
+.sg:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.sg.past:before{background:var(--sub)}
+.srow{display:flex;align-items:flex-start;gap:24px;padding:15px 0;border-top:1px solid var(--line);cursor:pointer}
+.sg+.srow{border-top:0}
+@media(hover:hover){.srow:hover{background:var(--surface)}}
+.sd{flex:none;width:92px;line-height:1.15}
+.sd b{display:block;font:700 15px Barlow,sans-serif}
+.sd i{display:block;font-style:normal;font-size:11px;color:var(--sub);margin-top:2px}
+.sb{min-width:0;flex:1}
+.sb .t{display:block;font-weight:700;overflow-wrap:anywhere}
+.sb .m{display:block;color:var(--sub);font-size:12px}
+.sb .m.one{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+mark{background:none;color:var(--accent);font-weight:700}
+@media(max-width:640px){.sbox{width:100%}#sr{margin-top:28px}.srow{gap:14px}.sd{width:78px}.sd b{font-size:14px}}
+@media(max-width:900px){.sbox{width:min(320px,100%)}}
+@media(max-width:640px){.sbox{width:100%}}
 @media(max-width:900px){
 .layout{grid-template-columns:1fr;margin-top:28px}
 .layout{gap:18px}
@@ -131,7 +165,13 @@ aside.nosel,aside .act-clear{display:none}
     <div class="tb"><h2 id="title" class="mo"></h2><div class="nav"><button id="prev" aria-label="이전 달"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button class="tdot" id="goToday" aria-label="오늘" title="오늘"></button><button id="next" aria-label="다음 달"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
     <p class="lead">하츠투하츠의 모든 일정을 한곳에서 모아봐요.<br>날짜를 누르면 그날의 일정을 볼 수 있어요.</p>
   </div>
+  <div class="sbox" id="sbox" role="search">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="일정 검색 (제목·멤버·종류·메모)" aria-label="일정 검색" autocomplete="off" enterkeyhint="search">
+    <button type="button" class="sx" id="qx" aria-label="검색어 지우기"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
 </header>
+<section id="sr" aria-live="polite"></section>
 <section id="up" aria-label="다가오는 일정"></section>
 <div class="layout">
   <main><div class="dow" id="dow"></div><div id="grid"></div></main>
@@ -169,7 +209,7 @@ const linkify=t=>esc(t).replace(/https?:\/\/[^\s<]+/g,u=>{const m=u.match(/[.,;:
 const DOW=['월','화','수','목','금','토','일'];
 const TK='h2h-gh-token';
 const getTok=()=>{try{return localStorage.getItem(TK)||''}catch(e){return''}};
-const TYPES=['방송','라디오','콘텐츠','공연·행사','팬사인회','영상통화회','음반·발매','이벤트','잡지','기념일','기타'];
+const TYPES=['방송','라디오','콘텐츠','공연·행사','팬사인회','영상통화 팬사인회','음반·발매','이벤트','잡지','기념일','기타'];
 const MEMBERS=['카르멘','지우','유하','스텔라','주은','에이나','이안','예온'];
 function toList(j){
   return (Array.isArray(j)?j:[]).filter(x=>x&&x.title&&x.date).map((x,i)=>({id:x.id||'a'+i,date:x.date,title:x.title,type:x.type||'기타',members:x.members||[],memo:x.memo||''}));
@@ -202,7 +242,7 @@ function render(){
   $('count').textContent=status;
   $('add').hidden=!isAdmin();
   $('auth').textContent=isAdmin()?'관리자 모드 끄기':'관리자';
-  side();renderUp();$('side').classList.toggle('nosel',!sel);
+  side();renderUp();renderSearch();$('side').classList.toggle('nosel',!sel);
 }
 function renderUp(){
   const t=ymd(new Date()),up=events.slice().sort((a,b)=>a.date.localeCompare(b.date)).filter(e=>e.date>=t).slice(0,3);
@@ -302,6 +342,49 @@ $('auth').onclick=()=>{
   }catch(err){}
   render();
 };
+
+/* 검색 */
+let q='';
+const terms=()=>q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+function hl(text,ts){
+  text=String(text);if(!ts.length)return esc(text);
+  const re=new RegExp('('+ts.map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','gi');
+  return text.split(re).map((p,i)=>i%2?`<mark>${esc(p)}</mark>`:esc(p)).join('');
+}
+const hay=e=>[e.title,e.type,e.members.length?e.members.join(' '):'전체',e.memo,e.date,e.date.replace(/-/g,'.')].join(' ').toLowerCase();
+function renderSearch(){
+  const ts=terms(),on=ts.length>0;
+  document.body.classList.toggle('searching',on);
+  $('sbox').classList.toggle('has',q.length>0);
+  if(!on){$('sr').innerHTML='';return}
+  const t=ymd(new Date());
+  const hit=events.filter(e=>{const h=hay(e);return ts.every(x=>h.includes(x))});
+  const up=hit.filter(e=>e.date>=t).sort((a,b)=>a.date.localeCompare(b.date));
+  const past=hit.filter(e=>e.date<t).sort((a,b)=>b.date.localeCompare(a.date));
+  const row=e=>{
+    const d=new Date(e.date+'T00:00'),meta=[e.type,e.members.length?e.members.join(', '):'전체'].join(' · ');
+    const memo=(e.memo||'').split('\n').filter(l=>ts.some(x=>l.toLowerCase().includes(x)))[0]||'';
+    return `<div class="srow" data-d="${e.date}"><div class="sd"><b>${e.date.replace(/-/g,'.')}</b><i>${DOW[(d.getDay()+6)%7]}요일</i></div><div class="sb"><span class="t">${hl(e.title,ts)}</span><span class="m">${hl(meta,ts)}</span>${memo?`<span class="m one">${hl(memo,ts)}</span>`:''}</div></div>`;
+  };
+  $('sr').innerHTML=`<div class="sh"><h2>검색 결과</h2><span class="d">${hit.length}개</span></div>`+(hit.length
+    ?(up.length?'<div class="sg">다가오는 일정</div>'+up.map(row).join(''):'')+(past.length?'<div class="sg past">지난 일정</div>'+past.map(row).join(''):'')
+    :`<div class="empty">“${esc(q.trim())}”에 해당하는 일정이 없어요.</div>`);
+}
+const clearSearch=()=>{q='';$('q').value='';renderSearch()};
+$('q').oninput=e=>{q=e.target.value;renderSearch()};
+$('q').onkeydown=e=>{if(e.key==='Escape'){clearSearch()}};
+$('qx').onclick=()=>{clearSearch();$('q').focus()};
+$('sr').onclick=e=>{
+  const r=e.target.closest('.srow');if(!r)return;
+  sel=r.dataset.d;const d=new Date(sel+'T00:00');view=new Date(d.getFullYear(),d.getMonth(),1);
+  clearSearch();render();
+  mob()?showSide():window.scrollTo({top:0,behavior:'smooth'});
+};
+document.addEventListener('keydown',e=>{
+  if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;
+  const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)||$('dlg').open)return;
+  e.preventDefault();$('q').focus();
+});
 
 fetch(CFG.path+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{data=j;build();render()}).catch(()=>{status='일정을 불러오지 못했어요.';render()});
 render();
