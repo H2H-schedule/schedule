@@ -32,25 +32,24 @@ header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 24px;justify-co
 .dow,.week{--g:12px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 var(--g)}
 .dow div{font:600 12px Barlow,sans-serif;color:var(--sub);padding-bottom:16px;letter-spacing:.04em}
 .dow .sun,.num.sun{color:var(--accent)}
-.cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:9px 0 0;height:170px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%}
+.cell{border:0;border-top:2px solid var(--ink);background:none;text-align:left;padding:9px 0 0;height:172px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%}
 .cell>*{flex:none}
 @media(hover:hover){.cell:hover{background:var(--surface)}}
 .cell.out{border-top-color:var(--line)}
 .cell.out .num{color:var(--sub);opacity:.75}
 .cell.sel{border-top-color:var(--accent)}
 .cell.sel .num{color:var(--accent)}
-.cell.today{border-top-color:var(--accent)}
-.cell.today .num{color:var(--accent)}
+.cell.today .num{display:block;width:fit-content;min-width:34px;height:34px;line-height:34px;padding:0 4px;margin:-4px 0 0 0;border-radius:17px;text-align:center;background:var(--ink);color:var(--bg)}
 .num{font:500 26px/1 Barlow,sans-serif;display:block;margin-bottom:4px}
-.ev{display:flex;gap:6px;margin-top:9px;font-size:12px;line-height:1.35;text-align:left}
+.ev{display:flex;gap:6px;margin-top:7px;font-size:12px;line-height:1.3;text-align:left}
 .ev:before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:var(--ink);margin-top:.55em}
 .evb{min-width:0;flex:1}
 .evb b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-weight:700;word-break:keep-all;overflow-wrap:anywhere}
-.evb i{display:block;font-style:normal;font-size:11px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.evb i{display:block;font-style:normal;font-size:11px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:0}
 .item .t:before,.ub .t:before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ink);margin-right:5px;vertical-align:middle;position:relative;top:-1px}
 .item.nodot .t:before,.ub .t:before{display:none}
 .dots{display:none}
-.more{font-size:11px;color:var(--sub);margin-top:8px;display:block}
+.more{font-size:11px;color:var(--sub);margin-top:5px;line-height:1.4;display:block}
 aside{border-left:1px solid var(--line);padding-left:28px;min-width:0}
 aside h2{font:700 22px Barlow,"Noto Sans KR",sans-serif;margin:0 0 4px}
 aside .d{color:var(--sub);margin-bottom:16px}
@@ -144,7 +143,7 @@ aside.nosel,aside .act-clear{display:none}
 @media(max-width:640px){.wrap{padding:32px 18px 56px}.site{font-size:28px;margin-bottom:22px}.mo{font-size:24px}.nav{top:1.2px}.lead{margin-top:18px}.dow,.week{--g:0px}
 .dow div{text-align:center;padding-bottom:10px}
 .cell,.cell.out,.cell.today,.cell.sel{border-top:1px solid var(--line)}
-.cell{height:120px;padding:10px 2px 0;align-items:stretch;text-align:left}
+.cell{height:122px;padding:10px 2px 0;align-items:stretch;text-align:left}
 .cell:hover{background:none}
 .num{font-size:15px;line-height:28px;height:28px;margin:0 auto 3px;text-align:center}
 .cell.sel .num{font-weight:700}
@@ -152,7 +151,8 @@ aside.nosel,aside .act-clear{display:none}
 .ev:before{width:4px;height:4px;margin-top:.45em}
 .evb i{display:none}
 .evb b{-webkit-line-clamp:2}
-.more{font-size:10px;margin-top:4px;text-align:center}
+.more{font-size:10px;margin-top:2px;line-height:1.3;text-align:center}
+.cell.today .num{width:28px;min-width:0;height:28px;line-height:28px;padding:0;margin:0 auto 3px;border-radius:50%}
 .cell.out .ev,.cell.out .more{opacity:.5}
 }
 </style>
